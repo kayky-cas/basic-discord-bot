@@ -1,0 +1,9 @@
+{
+  "name": "basic-discord-bot",
+  "version": "0.0.1",
+  "description": "This is a basic start for any discord bot",
+  "main": "dist/index.js",
+  "repository": "http://github.com/kayky-cas/basic-discord-bot",
+  "author": "Kayky Casagrande",
+  "license": "MIT"
+}
