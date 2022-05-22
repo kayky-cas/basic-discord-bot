@@ -1,5 +1,5 @@
 import cluster, { Worker } from 'cluster';
-import { main } from '../main';
+import { main } from '../bot/main';
 import { DebugService } from '../services/debug.service';
 
 export class Cluster {

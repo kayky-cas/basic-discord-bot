@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { Client, Intents, Message } from 'discord.js';
 import { ICommand } from '../@types/command.interface';
 import { DebugService } from '../services/debug.service';
@@ -15,6 +16,13 @@ export class Bot {
 
     const commandFile = require(`./commands/${command}.command`);
     const commandClass = new commandFile.default();
+
+    DebugService.log(
+      'Command',
+      chalk.yellow(command),
+      'was called by',
+      chalk.cyan(message.author.tag)
+    );
     (commandClass as ICommand).execute(message, args);
   }
 
