@@ -1,5 +1,10 @@
-function main() {
-  console.log('Hello world!');
-}
+import { Bot } from './bot/bot';
+import { ConfigService } from './services/config.service';
+import { EnvKeyStore } from './store/env-key.store';
 
-main();
+export function main() {
+  ConfigService.printEnvKeys();
+
+  const bot = new Bot(ConfigService.get(EnvKeyStore.BOT_TOKEN));
+  bot.run();
+}

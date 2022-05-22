@@ -19,4 +19,8 @@ export class DebugService {
   static error(...args: any[]): void {
     console.log(`[${chalk.red.bold('ERROR')}]`, ...args);
   }
+
+  static info(...args: any[]): void {
+    console.log(`[${chalk.cyan.bold('INFO')}]`, ...args);
+  }
 }

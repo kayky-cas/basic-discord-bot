@@ -1,6 +1,6 @@
 import cluster, { Worker } from 'cluster';
+import { main } from '../main';
 import { DebugService } from '../services/debug.service';
-import { EnvService } from '../services/env.service';
 
 export class Cluster {
   private static isPrimary(): boolean {
@@ -8,28 +8,31 @@ export class Cluster {
   }
 
   private static exitWorkerCall = (worker: Worker) => {
-    DebugService.debug(`Worker ${worker.process.pid} exited`);
     worker.kill();
+    if (worker.process.exitCode != 0 && !worker.exitedAfterDisconnect) {
+      DebugService.error(
+        `Worker ${worker.process.pid} exited with code ${worker.process.exitCode}`
+      );
+      cluster.fork();
+    } else {
+      DebugService.info(`Worker ${worker.process.pid} exited`);
+    }
   };
 
   private static onlineWorkerCall = (worker: Worker) => {
-    DebugService.debug(`Worker ${worker.process.pid} online`);
+    DebugService.info(`Worker ${worker.process.pid} online`);
   };
 
   static run(): void {
-    if (Cluster.isPrimary() && EnvService.isDev()) {
-      const numWorkers = require('os').cpus().length / 2;
+    if (Cluster.isPrimary()) {
+      DebugService.info(`Primary ${process.pid} is running`);
 
-      DebugService.debug(`Primary ${process.pid} is running`);
-
-      for (let i = 0; i < numWorkers; i++) {
-        cluster.fork();
-      }
+      cluster.fork();
 
       cluster.on('online', Cluster.onlineWorkerCall);
       cluster.on('exit', Cluster.exitWorkerCall);
     } else {
-      require('../main');
+      main();
     }
   }
 }
