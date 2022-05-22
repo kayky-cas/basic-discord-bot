@@ -15,15 +15,20 @@ export class Bot {
     const args = message.content.split(' ').slice(1);
 
     const commandFile = require(`./commands/${command}.command`);
-    const commandClass = new commandFile.default();
+    const commandClass = new commandFile.default() as ICommand;
 
     DebugService.log(
       'Command',
-      chalk.yellow(command),
+      chalk.yellow(commandClass.name),
       'was called by',
       chalk.cyan(message.author.tag)
     );
-    (commandClass as ICommand).execute(message, args);
+
+    if (commandClass.description != '') {
+      DebugService.info('Description:', chalk.gray(commandClass.description));
+    }
+
+    commandClass.execute(message, args);
   }
 
   public run(): void {
